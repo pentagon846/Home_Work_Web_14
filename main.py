@@ -18,6 +18,14 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def startup():
+    """
+The startup function is called when the application starts up.
+It's a good place to initialize things that are needed by your app,
+such as connecting to databases or initializing caches.
+
+:return: A list of coroutines to run
+:doc-author: Trelent
+"""
     r = await redis.Redis(host=settings.redis_host, port=settings.redis_port, db=0)
     await FastAPILimiter.init(r)
 
@@ -35,6 +43,15 @@ ALLOWED_IPS = [ip_address('192.168.1.0'), ip_address('172.16.0.0'), ip_address("
 
 @app.middleware("http")
 async def limit_access_by_ip(request: Request, call_next: Callable):
+    """
+The limit_access_by_ip function is a middleware function that limits access to the API by IP address.
+It checks if the client's IP address is in ALLOWED_IPS, and if not, returns a 403 Forbidden response.
+
+:param request: Request: Get the client's ip address
+:param call_next: Callable: Pass the next function in the chain
+:return: A jsonresponse object with a status code of 403 and a detail message
+:doc-author: Trelent
+"""
     ip = ip_address(request.client.host)
     if ip not in ALLOWED_IPS:
         return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content={"detail": "Not allowed IP address"})
@@ -44,11 +61,26 @@ async def limit_access_by_ip(request: Request, call_next: Callable):
 
 @app.get("/")
 async def root():
+    """
+The root function returns a JSON object with the message &quot;Hello World&quot;.
+
+:return: A dictionary with a single key &quot;message&quot; and the value of that key is &quot;hello world&quot;
+:doc-author: Trelent
+"""
     return {"message": "Hello World"}
 
 
 @app.get("/api/healthchecker")
 def healthchecker(db: Session = Depends(get_db)):
+    """
+The healthchecker function is a simple function that checks the health of the database.
+It does this by making a request to the database and checking if it returns any results.
+If there are no results, then we know something is wrong with our connection.
+
+:param db: Session: Get the database session
+:return: A dictionary with a message
+:doc-author: Trelent
+"""
     try:
         # Make request
         result = db.execute(text("SELECT 1")).fetchone()

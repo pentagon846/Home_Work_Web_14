@@ -14,6 +14,13 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("/me/", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(auth_service.get_current_user)):
+    """
+The read_users_me function is a GET endpoint that returns the current user's information.
+
+:param current_user: User: Pass the current user to the function
+:return: The current user
+:doc-author: Trelent
+"""
     return current_user
 
 
@@ -21,6 +28,15 @@ async def read_users_me(current_user: User = Depends(auth_service.get_current_us
 async def update_avatar_user(file: UploadFile = File(),
                              current_user: User = Depends(auth_service.get_current_user),
                              db: Session = Depends(get_db)):
+    """
+The update_avatar_user function updates the avatar of a user.
+
+:param file: UploadFile: Receive the file from the client
+:param current_user: User: Get the current user and
+:param db: Session: Access the database
+:return: A user object
+:doc-author: Trelent
+"""
     public_id = CloudImage.generate_name_avatar(current_user.email)
     r = CloudImage.upload(file.file, public_id)
     src_url = CloudImage.get_url_for_avatar(public_id, r)

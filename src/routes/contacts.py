@@ -24,6 +24,15 @@ def create_contact(
         db: Session = Depends(get_db),
         current_user: Contact = Depends(auth_service.get_current_user)
 ):
+    """
+The create_contact function creates a new contact in the database.
+
+:param contact: ContactCreateUpdate: Pass in the contact information
+:param db: Session: Access the database
+:param current_user: Contact: Get the current user from the database
+:return: A contactresponse object
+:doc-author: Trelent
+"""
     db_contact = Contact(**contact.dict(), user_id=current_user.id)
     db.add(db_contact)
     db.commit()
@@ -33,6 +42,13 @@ def create_contact(
 
 @router.get("/upcoming_birthdays/", response_model=List[ContactResponse])
 def upcoming_birthdays(db: Session = Depends(get_db)):
+    """
+The upcoming_birthdays function returns a list of contacts with birthdays in the next week.
+
+:param db: Session: Access the database
+:return: A list of contactresponse objects
+:doc-author: Trelent
+"""
     today = datetime.now().date()
     next_week = today + timedelta(days=7)
 
@@ -56,6 +72,18 @@ def get_contact(
         db: Session = Depends(get_db),
         current_user: Contact = Depends(auth_service.get_current_user)
 ):
+    """
+The get_contact function returns a ContactResponse object, which is the same as a Contact model.
+The function takes in an integer contact_id and uses it to query the database for that specific contact.
+If no such contact exists, then an HTTPException is raised with status code 404 (Not Found).
+Otherwise, if the user does exist in the database, then their information will be returned.
+
+:param contact_id: int: Specify the id of the contact to be retrieved
+:param db: Session: Get the database session
+:param current_user: Contact: Get the current user
+:return: A contactresponse object, which is the same as a contact object but without the user_id attribute
+:doc-author: Trelent
+"""
     contact = db.query(Contact).filter(Contact.id == contact_id, Contact.user_id == current_user.id).first()
     if contact is None:
         raise HTTPException(status_code=404, detail="Contact not found")
@@ -69,6 +97,20 @@ def update_contact(
         db: Session = Depends(get_db),
         current_user: Contact = Depends(auth_service.get_current_user)
 ):
+    """
+The update_contact function updates a contact in the database.
+    It takes an id, a ContactCreateUpdate object, and optionally a db Session and current_user.
+    If no user is provided it will use the auth_service to get one from the Authorization header of the request.
+    The function then queries for that contact in our database using its id and user_id (to ensure only contacts belonging to that user are updated).
+    If no such contact exists we raise an HTTPException with status code 404 (Not Found) and detail &quot;Contact not found&quot;.
+
+:param contact_id: int: Identify the contact to be updated
+:param contact: ContactCreateUpdate: Pass the contact data to update
+:param db: Session: Get the database session
+:param current_user: Contact: Get the current user from the database
+:return: A contactresponse object
+:doc-author: Trelent
+"""
     db_contact = db.query(Contact).filter(Contact.id == contact_id, Contact.user_id == current_user.id).first()
     if db_contact is None:
         raise HTTPException(status_code=404, detail="Contact not found")
@@ -85,6 +127,15 @@ def delete_contact(
         db: Session = Depends(get_db),
         current_user: Contact = Depends(auth_service.get_current_user)
 ):
+    """
+The delete_contact function deletes a contact from the database.
+
+:param contact_id: int: Specify the id of the contact that will be deleted
+:param db: Session: Get a database session
+:param current_user: Contact: Get the currently logged in user
+:return: A contactresponse object
+:doc-author: Trelent
+"""
     db_contact = db.query(Contact).filter(Contact.id == contact_id, Contact.user_id == current_user.id).first()
     if db_contact is None:
         raise HTTPException(status_code=404, detail="Contact not found")
