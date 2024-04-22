@@ -16,12 +16,15 @@ FastAPI та використовує SQLAlchemy для взаємодії з б
 ## Додано новий функціонал
 - Створено авторизацію
 - Створено аутентифікацію
+- Додана документація
+- додані тести
 
 ## Технології
 
 - **FastAPI**
 - **SQLAlchemy**, ORM (Object-Relational Mapping) для Python.
-- **Postgresql** 
+- **Postgresql**
+- **Pytest, Unittest** 
 
 ## Встановлення та запуск
 
