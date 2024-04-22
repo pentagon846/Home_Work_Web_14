@@ -111,7 +111,7 @@ The confirmed_email function is used to confirm a user's email address.
     if user is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Verification error")
     if user.confirmed:
-        return {"message": "Youur email is already confirmed"}
+        return {"message": "Your email is already confirmed"}
     await repository_users.confirmed_email(email, db)
     return {"message": "Email was confirmed"}
 

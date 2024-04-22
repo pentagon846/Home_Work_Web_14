@@ -1,5 +1,5 @@
 from datetime import date
-from src.database.models import Contact, User
+from src.database.models import ContactModel, User
 from src.schemas import ContactModel
 from sqlalchemy.orm import Session
 from sqlalchemy import extract, and_
@@ -16,7 +16,7 @@ The get_contacts function returns a list of contacts for the user.
 :return: A list of contacts
 :doc-author: Trelent
 """
-    contacts = db.query(Contact).filter(Contact.user_id == user.id).limit(limit).offset(offset).all()
+    contacts = db.query(ContactModel).filter(ContactModel.user_id == user.id).limit(limit).offset(offset).all()
     return contacts
 
 
@@ -33,7 +33,7 @@ The get_contact_by_id function takes in a contact_id and user, and returns the c
 :return: The contact with the given id
 :doc-author: Trelent
 """
-    contact = db.query(Contact).filter(and_(Contact.id == contact_id, Contact.user_id == user.id)).first()
+    contact = db.query(ContactModel).filter(and_(ContactModel.id == contact_id, ContactModel.user_id == user.id)).first()
     return contact
 
 
@@ -50,7 +50,7 @@ The get_contact_by_email function takes in an email and a user, and returns the 
 :return: The contact with the given email and user
 :doc-author: Trelent
 """
-    contact = db.query(Contact).filter(and_(Contact.email == email, Contact.user_id == user.id)).first()
+    contact = db.query(ContactModel).filter(and_(ContactModel.email == email, ContactModel.user_id == user.id)).first()
     return contact
 
 
@@ -66,7 +66,7 @@ and returns the contact associated with that phone number.
 :return: A contact object
 :doc-author: Trelent
 """
-    contact = db.query(Contact).filter(and_(Contact.phone == phone, Contact.user_id == user.id)).first()
+    contact = db.query(ContactModel).filter(and_(ContactModel.phone == phone, ContactModel.user_id == user.id)).first()
     return contact
 
 
@@ -81,7 +81,7 @@ first name. If no such contact exists, it returns None.
 :return: A contact object
 :doc-author: Trelent
 """
-    contact = db.query(Contact).filter(and_(Contact.first_name == first_name, Contact.user_id == user.id)).first()
+    contact = db.query(ContactModel).filter(and_(ContactModel.first_name == first_name, ContactModel.user_id == user.id)).first()
     return contact
 
 
@@ -95,7 +95,7 @@ The get_contact_by_second_name function returns a contact by second name.
 :return: The first contact with the specified second name
 :doc-author: Trelent
 """
-    contact = db.query(Contact).filter(and_(Contact.second_name == second_name, Contact.user_id == user.id)).first()
+    contact = db.query(ContactModel).filter(and_(ContactModel.second_name == second_name, ContactModel.user_id == user.id)).first()
     return contact
 
 
@@ -113,7 +113,7 @@ The get_contact_by_birth_date function returns a contact object from the databas
 :return: The contact with the specified birth date and user id
 :doc-author: Trelent
 """
-    contact = db.query(Contact).filter(and_(Contact.birth_date == birth_date, Contact.user_id == user.id)).first()
+    contact = db.query(ContactModel).filter(and_(ContactModel.birth_date == birth_date, ContactModel.user_id == user.id)).first()
     return contact
 
 
@@ -128,7 +128,7 @@ The create function creates a new contact in the database.
 :return: The contact model
 :doc-author: Trelent
 """
-    contact = Contact(**body.dict(), user=current_user)
+    contact = ContactModel(**body.dict(), user=current_user)
     db.add(contact)
     db.commit()
     db.refresh(contact)
@@ -195,9 +195,9 @@ The function takes in three parameters:
 :return: A list of contacts whose birthdays are between the start date and end date
 :doc-author: Trelent
 """
-    birth_day = extract('day', Contact.birth_date)
-    birth_month = extract('month', Contact.birth_date)
-    contacts = db.query(Contact).filter(
+    birth_day = extract('day', ContactModel.birth_date)
+    birth_month = extract('month', ContactModel.birth_date)
+    contacts = db.query(ContactModel).filter(
         birth_month == extract('month', start_date),
         birth_day.between(extract('day', start_date), extract('day', end_date))
     ).all()

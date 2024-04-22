@@ -4,7 +4,7 @@ from sqlalchemy.orm import declarative_base, relationship
 Base = declarative_base()
 
 
-class Contact(Base):
+class ContactModel(Base):
     __tablename__ = "contacts"
     id = Column(Integer, primary_key=True, index=True)
     first_name = Column(String, nullable=False)
